@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 
 contract WavePortal {
     uint256 totalWaves;
+    address[] coolPeople;
 
     constructor() {
         console.log("Beeg wave");
@@ -13,7 +14,16 @@ contract WavePortal {
 
     function wave() public {
         totalWaves += 1;
-        console.log("%s has waved!", msg.sender);
+        coolPeople.push(msg.sender);
+        
+        for (uint i=0; i < coolPeople.length; i++) {
+            if(i == coolPeople.length - 1){
+                console.log("Welcome to the cool people club, %s!", coolPeople[i]);
+            } else {
+                console.log("Sup' %s", coolPeople[i]);
+            }
+        }
+
     }
 
     function getTotalWaves() public view returns (uint256) {
