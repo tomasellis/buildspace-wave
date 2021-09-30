@@ -1,8 +1,110 @@
+import { ethers } from "ethers";
 import Head from "next/head";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
+import CONTRACT_ABI from "../public/utils/WavePortal.json";
+
+const CONTRACT_ADDRESS = "0x23acd5D5ad2D9e714F2AaB5F52daea5E5381c28b";
 
 export default function Home() {
+  const checkIfWalletIsConnected = async () => {
+    /*
+     * First make sure we have access to window.ethereum
+     */
+
+    // @ts-ignore
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      console.log("Make sure you have metamask!");
+
+      const accounts = await ethereum.request({ method: "eth_accounts" });
+
+      if (accounts.length !== 0) {
+        console.log("ACCOUNTS", accounts);
+        const account = accounts[0];
+        console.log("Found an authorized account:", account);
+        setCurrentAccount(account);
+      } else {
+        console.log("No authorized account found");
+      }
+
+      return;
+    } else {
+      console.log("We have the ethereum object", ethereum);
+    }
+  };
+
+  const connectWallet = async () => {
+    try {
+      // @ts-ignore
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get MetaMask!");
+        return;
+      }
+
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      console.log("Connected", accounts[0]);
+
+      const firstHalf = accounts[0].slice(0, 6);
+      const secondHalf = accounts[0].slice(-4);
+      const fullUsername = "「" + firstHalf + "..." + secondHalf + "」";
+
+      setCurrentUser(fullUsername);
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const wave = async () => {
+    try {
+      // @ts-ignore
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const waveportalContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          CONTRACT_ABI.abi,
+          signer
+        );
+
+        let count = await waveportalContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+
+        const waveTxn = await waveportalContract.wave();
+        console.log("Mining...", waveTxn.hash);
+
+        await waveTxn.wait();
+        console.log("Mined -- ", waveTxn.hash);
+
+        count = await waveportalContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Check wallet once when starting
+  useEffect(() => {
+    checkIfWalletIsConnected();
+  }, []);
+
+  // Save the account
+  const [currentAccount, setCurrentAccount] = useState("");
+  const [currentUser, setCurrentUser] = useState("");
+
   return (
     <div className={styles.container}>
       <Head>
@@ -28,7 +130,8 @@ export default function Home() {
                 className={styles.chatMessage}
                 style={{ backgroundColor: "red" }}
               >
-                Jesus says, "Yoooooooo, its ya man, J-Boy in da house"
+                Jesus says, "Yoooooooo, its ya man, J-Boy in da
+                houseaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
               </span>
             </div>
             <div className={styles.messageContainer}>
@@ -49,7 +152,15 @@ export default function Home() {
             className={styles.messageInput}
             placeholder={"Write your message here! You can send HTML too :D"}
           ></textarea>
-          <button>LETS GOOOOO</button>
+          {currentAccount === "" ? (
+            <button onClick={() => connectWallet()}>
+              Connect your wallet with Metamask!
+            </button>
+          ) : (
+            <button onClick={() => wave()}>
+              Send that message, you got this 😎
+            </button>
+          )}
         </div>
       </main>
 
