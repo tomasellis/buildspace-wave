@@ -81,9 +81,11 @@ export default function Home() {
         console.log("Retrieved total wave count...", count.toNumber());
 
         const waveTxn = await waveportalContract.wave();
+        setMining(true);
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
+        setMining(false);
         console.log("Mined -- ", waveTxn.hash);
 
         count = await waveportalContract.getTotalWaves();
@@ -104,6 +106,7 @@ export default function Home() {
   // Save the account
   const [currentAccount, setCurrentAccount] = useState("");
   const [currentUser, setCurrentUser] = useState("");
+  const [mining, setMining] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -156,6 +159,12 @@ export default function Home() {
             <button onClick={() => connectWallet()}>
               Connect your wallet with Metamask!
             </button>
+          ) : mining === true ? (
+            <Image
+              src="/assets/vibingcat.gif"
+              width="100px"
+              height="100px"
+            ></Image>
           ) : (
             <button onClick={() => wave()}>
               Send that message, you got this 😎
