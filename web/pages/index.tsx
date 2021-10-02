@@ -184,7 +184,7 @@ export default function Home() {
         <link rel="icon" href="/waveIcon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <div className={styles.main}>
         <div className={styles.centerPiece}>
           <div className={styles.banner}>
             Now talking in: トム's 🌊 ROOM N°1
@@ -215,7 +215,7 @@ export default function Home() {
             </button>
           )}
         </div>
-      </main>
+      </div>
 
       <footer className={styles.footer}>
         <a
