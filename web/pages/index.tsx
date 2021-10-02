@@ -13,7 +13,7 @@ export default function Home() {
     // @ts-ignore
     const { ethereum } = window;
 
-    if (!ethereum) {
+    if (ethereum) {
       console.log("Make sure you have metamask!");
 
       const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -29,7 +29,7 @@ export default function Home() {
 
       return;
     } else {
-      console.log("We have the ethereum object", ethereum);
+      window.alert("Please install Metamask to get the full experience");
     }
   };
 
@@ -173,9 +173,6 @@ export default function Home() {
   const [allWaves, setAllWaves] = useState<WaveFront[] | []>([]);
   const [userMessage, setUserMessage] = useState<string>("");
 
-  useEffect(() => {
-    console.log("allwaves", allWaves);
-  }, [currentAccount]);
   return (
     <div className={styles.container}>
       <Head>
