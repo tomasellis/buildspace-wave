@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import CONTRACT_ABI from "../public/utils/WavePortal.json";
 
-const CONTRACT_ADDRESS = "0x23acd5D5ad2D9e714F2AaB5F52daea5E5381c28b";
+const CONTRACT_ADDRESS = "0x496D3F45D82933568C0438E2ba2Cda11db69508F";
 
 export default function Home() {
   const checkIfWalletIsConnected = async () => {

@@ -1,4 +1,5 @@
 import hre from "hardhat";
+import { ethers } from "hardhat";
 
 const main = async () => {
   // Get two addresses
@@ -22,16 +23,19 @@ const main = async () => {
   // Use the original waveContract address to run the function
   waveCount = await waveContract.getTotalWaves();
 
-  let waveTxn = await waveContract.wave();
+  // Send a wave
+  let waveTxn = await waveContract.wave("Yoyoyo, its J-man, wazuuuup!");
   await waveTxn.wait();
 
-  waveCount = await waveContract.getTotalWaves();
-
-  // Use a random address to run the function
-  waveTxn = await waveContract.connect(randomPerson).wave();
+  // Get a random address
+  const [_, randoPerson] = await ethers.getSigners();
+  waveTxn = await waveContract
+    .connect(randoPerson)
+    .wave("Yoooooooo, how you doing J-man, this is G. Odd!");
   await waveTxn.wait();
 
-  waveCount = await waveContract.getTotalWaves();
+  let allWaves = await waveContract.getAllWaves();
+  console.log(allWaves);
 };
 
 const runMain = async () => {
