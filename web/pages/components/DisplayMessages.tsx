@@ -28,7 +28,7 @@ const DisplayMessages = ({ waves }: { waves: WaveFront[] }) => {
     );
   }
 
-  return messages && messages.length > 0 ? (
+  return messages ? (
     <div className={styles.chatBox}>{messages}</div>
   ) : (
     <span>No messages</span>
