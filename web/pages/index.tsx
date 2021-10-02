@@ -10,10 +10,6 @@ const CONTRACT_ADDRESS = "0x496D3F45D82933568C0438E2ba2Cda11db69508F";
 
 export default function Home() {
   const checkIfWalletIsConnected = async () => {
-    /*
-     * First make sure we have access to window.ethereum
-     */
-
     // @ts-ignore
     const { ethereum } = window;
 
@@ -27,7 +23,6 @@ export default function Home() {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
         setCurrentAccount(account);
-        await getAllWaves();
       } else {
         console.log("No authorized account found");
       }
@@ -57,8 +52,8 @@ export default function Home() {
       const firstHalf = accounts[0].slice(0, 6);
       const secondHalf = accounts[0].slice(-4);
       const fullUsername = "「" + firstHalf + "..." + secondHalf + "」";
-      await getAllWaves();
       setCurrentUser(fullUsername);
+
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.log(error);
@@ -135,9 +130,40 @@ export default function Home() {
       console.log(error);
     }
   };
+
+  const getInfoWithoutMetamask = async () => {
+    try {
+      const infuraProvider = new ethers.providers.JsonRpcProvider(
+        process.env.NEXT_PUBLIC_INFURA_URL
+      );
+
+      const waveportalContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        CONTRACT_ABI.abi,
+        infuraProvider
+      );
+
+      // Get all the waves
+      const waves: Wave[] = await waveportalContract.getAllWaves();
+      let wavesCleaned: WaveFront[] = [];
+
+      waves.forEach((wave) => {
+        wavesCleaned.push({
+          address: wave.waver,
+          timestamp: new Date(wave.timestamp * 1000),
+          message: wave.message,
+        });
+      });
+
+      setAllWaves(wavesCleaned);
+    } catch (err) {
+      console.log("Infura info", err);
+    }
+  };
   // Check wallet once when starting
   useEffect(() => {
     checkIfWalletIsConnected();
+    getInfoWithoutMetamask();
   }, []);
 
   // Save the account
