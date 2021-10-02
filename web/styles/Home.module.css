@@ -80,20 +80,23 @@
 }
 
 .messageContainer {
-  padding-top: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  overflow: auto;
+  display: flex;
+  flex-flow: row nowrap;
 }
+
 .chatDate {
-  height: 100%;
   padding: 5px;
+  width: fit-content;
+  max-width: fit-content;
   background-color: black;
 }
 
 .chatMessage {
+  display: block;
   padding: 5px;
   overflow: auto;
+  max-width: 75vw;
+  overflow-wrap: break-word;
 }
 
 .message {
