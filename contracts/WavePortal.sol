@@ -34,14 +34,17 @@ contract WavePortal {
         
         // Tell everyone we've just been waved at
         emit NewWave(msg.sender, block.timestamp, _message);
+       
+        uint256 prizeAmount = 0.0001 ether;
         
-        // for (uint i=0; i < coolPeople.length; i++) {
-        //     if(i == coolPeople.length - 1){
-        //         console.log("Welcome to the cool people club, %s!", coolPeople[i]);
-        //     } else {
-        //         console.log("Sup' %s", coolPeople[i]);
-        //     }
-        // }
+        require(
+            prizeAmount <= address(this).balance,
+            "Trying to withdraw more money than the contract has."
+        );
+
+        (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+        
+        require(success, "Failed to withdraw money from contract.");
     }
 
     function getAllWaves() public view returns (Wave[] memory) {
