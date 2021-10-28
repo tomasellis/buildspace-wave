@@ -10,8 +10,10 @@ const main = async () => {
   const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
   const waveContract = await waveContractFactory.deploy({
     value: hre.ethers.utils.parseEther("0.001"),
+    gasLimit: 1000000,
   });
 
+  await waveContract.deployed();
   console.log("WavePortal address: ", waveContract.address);
 };
 
