@@ -8,8 +8,10 @@ const main = async () => {
   // Search for the waveContract constructor
   const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
 
-  // Deploy the contract with hardhat
-  const waveContract = await waveContractFactory.deploy();
+  // Deploy the contract with hardhat and fund it with 0.1 ether
+  const waveContract = await waveContractFactory.deploy({
+    value: hre.ethers.utils.parseEther("0.1"),
+  });
 
   // Simulate deployment
   await waveContract.deployed();
@@ -17,25 +19,29 @@ const main = async () => {
   console.log("Contract deployed to:", waveContract.address);
   console.log("Contract deployed by:", owner.address);
 
-  // Create a variable to hold wave numbers
-  let waveCount;
+  // Get contract balance
+  let contractBalance = await hre.ethers.provider.getBalance(
+    waveContract.address
+  );
 
-  // Use the original waveContract address to run the function
-  waveCount = await waveContract.getTotalWaves();
+  console.log(
+    "The contracts balance is:",
+    hre.ethers.utils.formatEther(contractBalance)
+  );
 
   // Send a wave
   let waveTxn = await waveContract.wave("Yoyoyo, its J-man, wazuuuup!");
   await waveTxn.wait();
 
-  // Get a random address
-  const [_, randoPerson] = await ethers.getSigners();
-  waveTxn = await waveContract
-    .connect(randoPerson)
-    .wave("Yoooooooo, how you doing J-man, this is G. Odd!");
-  await waveTxn.wait();
+  // Check the updated balance
+  contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+  console.log(
+    "Contract balance:",
+    hre.ethers.utils.formatEther(contractBalance)
+  );
 
   let allWaves = await waveContract.getAllWaves();
-  console.log(allWaves);
+  console.log("Here are all the waves ====>", allWaves);
 };
 
 const runMain = async () => {

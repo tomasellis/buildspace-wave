@@ -6,7 +6,7 @@ import styles from "../styles/Home.module.css";
 import CONTRACT_ABI from "../public/utils/WavePortal.json";
 import DisplayMessages from "./components/DisplayMessages";
 
-const CONTRACT_ADDRESS = "0x496D3F45D82933568C0438E2ba2Cda11db69508F";
+const CONTRACT_ADDRESS = "0x1d5Db19b55fc464d1fD7D49f597b0DD251E92d0f";
 
 export default function Home() {
   const checkIfWalletIsConnected = async () => {

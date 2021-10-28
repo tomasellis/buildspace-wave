@@ -16,7 +16,7 @@ contract WavePortal {
 
     Wave[] coolPeopleWaves;
 
-    constructor() {
+    constructor() payable {
         console.log("Beeg wave");
     }
 
